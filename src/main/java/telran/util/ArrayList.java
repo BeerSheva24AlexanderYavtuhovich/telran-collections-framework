@@ -17,15 +17,6 @@ public class ArrayList<T> implements List<T> {
         this(DEFAULT_CAPACITY);
     }
 
-    @Override
-    public boolean add(T obj) {
-        if (size == array.length) {
-            reallocate();
-        }
-        array[size++] = obj;
-        return true;
-    }
-
     private void reallocate() {
         array = Arrays.copyOf(array, array.length * 2);
     }
@@ -38,7 +29,7 @@ public class ArrayList<T> implements List<T> {
         @SuppressWarnings("unchecked")
         T removed = (T) array[index];
         System.arraycopy(array, index + 1, array, index, size - index - 1);
-        array[size--] = null;
+        array[--size] = null;
         return removed;
     }
 
@@ -105,10 +96,26 @@ public class ArrayList<T> implements List<T> {
     }
 
     @Override
-    public void add(int index, T obj) {
+    public boolean add(T obj) {
         if (size == array.length) {
             reallocate();
         }
+        array[size++] = obj;
+        return true;
+    }
+
+    @Override
+    public void add(int index, T obj) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index not correct");
+        }
+
+        if (size == array.length) {
+            reallocate();
+        }
+        System.arraycopy(array, index, array, index + 1, size - index);
+        array[index] = obj;
+        size++;
     }
 
     @Override

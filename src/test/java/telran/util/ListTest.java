@@ -28,6 +28,28 @@ public abstract class ListTest extends CollectionTest {
     }
 
     @Test
+    void addToBeginTest() {
+        list.add(0, 999);
+        assertEquals(999, list.get(0));
+        assertEquals(array.length + 1, list.size());
+    }
+
+    @Test
+    void addToEndTest() {
+        list.add(list.size(), 999);
+        assertEquals(999, list.get(list.size() - 1));
+        assertEquals(array.length + 1, list.size());
+    }
+
+    @Test
+    void addInMiddleTest() {
+        list.add(4, 999);
+        assertEquals(999, list.get(4));
+        assertEquals(array.length + 1, list.size());
+        assertEquals(10, list.get(5));
+    }
+
+    @Test
     @Override
     void removeTest() {
         Integer newEl = 300;
