@@ -3,6 +3,7 @@ package telran.util;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.regex.Pattern;
 
 public class ArrayList<T> implements List<T> {
     private static final int DEFAULT_CAPACITY = 16;
@@ -133,7 +134,7 @@ public class ArrayList<T> implements List<T> {
         int result = -1;
 
         while (i >= 0 && result == -1) {
-            if (array[i] != null && array[i].equals(pattern)) {
+            if ((array[i] == null && pattern == null) || (array[i] != null && array[i].equals(pattern))) {
                 result = i;
             }
             i--;

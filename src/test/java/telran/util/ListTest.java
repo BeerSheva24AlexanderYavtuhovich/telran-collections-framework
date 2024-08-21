@@ -108,6 +108,15 @@ public abstract class ListTest extends CollectionTest {
     void testIndexOf() {
         assertEquals(3, list.indexOf(1));
         assertEquals(-1, list.indexOf(12));
+
+        list.add(null);
+        assertEquals(8, list.lastIndexOf(null));
+    }
+
+    @Test
+    void testLastIndexOf() {
+        list.add(null);
+        assertEquals(8, list.lastIndexOf(null));
     }
 
     @Test
