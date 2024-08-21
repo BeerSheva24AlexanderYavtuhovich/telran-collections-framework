@@ -1,1 +1,4 @@
-# CW20 - Collections
+# HW20 - Collections
+
+## Testing passed:
+![alt text](image.png)
