@@ -52,20 +52,16 @@ public abstract class ListTest extends CollectionTest {
     @Test
     @Override
     void removeTest() {
-        Integer newEl = 300;
-        Integer elToRemove = 20;
-
-        list.remove(elToRemove);
-        assertFalse(list.contains(elToRemove));
-
-        list.add(newEl);
-        assertTrue(list.contains(newEl));
-        list.remove(newEl);
-        assertFalse(list.contains(newEl));
-
+        list.remove(0);
+        assertFalse(list.contains(3));
+        list.remove(3);
+        assertFalse(list.contains(10));
+        list.remove(5);
+        assertFalse(list.contains(17));
+        assertEquals(array.length - 3, list.size());
     }
 
-    @Test
+     @Test
     void testRemoveAtIndex() {
         assertEquals(20, list.remove(2));
         assertEquals(7, list.size());

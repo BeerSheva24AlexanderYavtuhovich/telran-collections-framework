@@ -3,6 +3,7 @@ package telran.util;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class ArrayList<T> implements List<T> {
     private static final int DEFAULT_CAPACITY = 16;
@@ -45,17 +46,11 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public int indexOf(T pattern) {
-        int i = 0;
-        int result = -1;
-
-        while (i < size && result == -1) {
-            if (array[i].equals(pattern)) {
-                result = i;
-            }
-            i++;
+        int index = 0;
+        while(index < size && !Objects.equals(array[index], pattern)) {
+            index++;
         }
-
-        return result;
+        return index == size ? -1 : index;
     }
 
     @Override
@@ -129,17 +124,11 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public int lastIndexOf(T pattern) {
-        int i = size - 1;
-        int result = -1;
-
-        while (i >= 0 && result == -1) {
-            if ((array[i] == null && pattern == null) || (array[i] != null && array[i].equals(pattern))) {
-                result = i;
-            }
-            i--;
+        int index = size - 1;
+        while(index >= 0 && !Objects.equals(array[index], pattern)) {
+            index--;
         }
-
-        return result;
+        return index;
     }
 
 }

@@ -1,6 +1,8 @@
 package telran.util;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class LinkedList<T> implements List<T> {
 
@@ -14,6 +16,42 @@ public class LinkedList<T> implements List<T> {
         }
     }
 
+    private class LinkedListIterator implements Iterator<T> {
+        private int index = 0;
+        Node<T> current = null;
+
+        @Override
+        public boolean hasNext() {
+            return index < size;
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            if (Objects.equals(current, null)) {
+                current = head;
+            } else {
+                current = current.next;
+            }
+
+            if (Objects.equals(current, null)) {
+                throw new NoSuchElementException();
+            }
+
+            T obj = current.obj;
+            index++;
+
+            return obj;
+        }
+    }
+
+    Node<T> head;
+    Node<T> tail;
+    int size = 0;
+
     private void checkIndex(int index, boolean sizeInclusive) {
         int limit = sizeInclusive ? size : size - 1;
         if (index < 0 || index > limit) {
@@ -21,43 +59,20 @@ public class LinkedList<T> implements List<T> {
         }
     }
 
-    private class LinkedListIterator implements Iterator<T> {
-
-        @Override
-        public boolean hasNext() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'hasNext'");
-        }
-
-        @Override
-        public T next() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'next'");
-        }
-
-    }
-
-    Node<T> head;
-    Node<T> tail;
-    int size = 0;
-
     private Node<T> getNode(int index) {
         return index < size / 2 ? getNodeFromHead(index) : getNodeFromTail(index);
     }
 
     private Node<T> getNodeFromTail(int index) {
         Node<T> current = tail;
-
         for (int i = size - 1; i > index; i--) {
             current = current.prev;
         }
         return current;
-
     }
 
     private Node<T> getNodeFromHead(int index) {
         Node<T> current = head;
-
         for (int i = 0; i < index; i++) {
             current = current.next;
         }
@@ -72,6 +87,7 @@ public class LinkedList<T> implements List<T> {
         } else {
             addMiddle(node, index);
         }
+        size++;
     }
 
     private void addMiddle(Node<T> nodeToInsert, int index) {
@@ -83,20 +99,19 @@ public class LinkedList<T> implements List<T> {
         nodeAfter.next = nodeToInsert;
     }
 
-    private void addTail(Node<T> nodeToInsert) {
-        tail.next = nodeToInsert;
-        nodeToInsert.prev = tail;
-
-        tail = nodeToInsert;
+    private void addTail(Node<T> node) {
+        tail.next = node;
+        node.prev = tail;
+        tail = node;
     }
 
-    private void addHead(Node<T> nodeToInsert) {
+    private void addHead(Node<T> node) {
         if (head == null) {
-            head = tail = nodeToInsert;
+            head = tail = node;
         } else {
-            nodeToInsert.next = head;
-            head.prev = nodeToInsert;
-            head = nodeToInsert;
+            node.next = head;
+            head.prev = node;
+            head = node;
         }
     }
 
@@ -109,8 +124,12 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public boolean remove(T pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        int index = indexOf(pattern);
+        boolean wasRemoved = index >= 0;
+        if (wasRemoved) {
+            remove(index);
+        }
+        return wasRemoved;
     }
 
     @Override
@@ -140,28 +159,86 @@ public class LinkedList<T> implements List<T> {
         addNode(node, index);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T remove(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        Node<T> removedNode;
+        checkIndex(index, true);
+        if (index == 0) {
+            removedNode = removeHead();
+        } else if (index == size) {
+            removedNode = removeTail();
+        } else {
+            removedNode = removeMiddle(index);
+        }
+        size--;
+        return (T) removedNode.obj;
+    }
+
+    private Node<T> removeMiddle(int index) {
+        Node<T> removedNode = getNode(index);
+        Node<T> nodeBefore = removedNode.prev;
+        Node<T> nodeAfter = removedNode.next;
+
+        if (!Objects.equals(nodeBefore, null)) {
+            nodeBefore.next = nodeAfter;
+        } else {
+            head = nodeAfter;
+        }
+
+        if (!Objects.equals(nodeAfter, null)) {
+            nodeAfter.prev = nodeBefore;
+        } else {
+            tail = nodeBefore;
+        }
+
+        return removedNode;
+    }
+
+    private Node<T> removeTail() {
+        Node<T> removedNode = tail;
+        tail = tail.prev;
+        return removedNode;
+    }
+
+    private Node<T> removeHead() {
+        Node<T> removedNode = head;
+        head = head.next;
+
+        if (Objects.equals(head, null)) {
+            tail = null;
+        } else {
+            head.prev = null;
+        }
+        return removedNode;
     }
 
     @Override
     public T get(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+        checkIndex(index, false);
+        return getNode(index).obj;
     }
 
     @Override
     public int indexOf(T pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'indexOf'");
+        Node<T> current = head;
+        int index = 0;
+        while (index < size && !Objects.equals(current.obj, pattern)) {
+            current = current.next;
+            index++;
+        }
+        return index == size ? -1 : index;
     }
 
     @Override
     public int lastIndexOf(T pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'lastIndexOf'");
+        Node<T> current = tail;
+        int index = size - 1;
+        while (index >= 0 && !Objects.equals(current.obj, pattern)) {
+            current = current.prev;
+            index--;
+        }
+        return index >= 0 ? index : -1;
     }
 
 }

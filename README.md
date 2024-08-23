@@ -1,4 +1,3 @@
 # HW20 - Collections
 
-## Testing passed:
-![alt text](image.png)
+# HW21 - LinkedList
