@@ -17,36 +17,26 @@ public class LinkedList<T> implements List<T> {
     }
 
     private class LinkedListIterator implements Iterator<T> {
-        private int index = 0;
-        Node<T> current = null;
-
+        Node<T> current = head;
+    
         @Override
         public boolean hasNext() {
-            return index < size;
+            return current != null;
         }
-
+    
         @Override
         public T next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-
-            if (Objects.equals(current, null)) {
-                current = head;
-            } else {
-                current = current.next;
-            }
-
-            if (Objects.equals(current, null)) {
-                throw new NoSuchElementException();
-            }
-
+    
             T obj = current.obj;
-            index++;
-
+            current = current.next;
+    
             return obj;
         }
     }
+    
 
     Node<T> head;
     Node<T> tail;
