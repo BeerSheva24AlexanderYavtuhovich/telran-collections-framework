@@ -24,9 +24,7 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public T remove(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index not correct");
-        }
+        checkIndex(index, false);
         @SuppressWarnings("unchecked")
         T removed = (T) array[index];
         System.arraycopy(array, index + 1, array, index, size - index - 1);
@@ -34,12 +32,10 @@ public class ArrayList<T> implements List<T> {
         return removed;
     }
 
-
-
     @Override
     public int indexOf(T pattern) {
         int index = 0;
-        while(index < size && !Objects.equals(array[index], pattern)) {
+        while (index < size && !Objects.equals(array[index], pattern)) {
             index++;
         }
         return index == size ? -1 : index;
@@ -54,8 +50,6 @@ public class ArrayList<T> implements List<T> {
     public boolean isEmpty() {
         return size == 0;
     }
-
-
 
     @Override
     public Iterator<T> iterator() {
@@ -114,7 +108,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public int lastIndexOf(T pattern) {
         int index = size - 1;
-        while(index >= 0 && !Objects.equals(array[index], pattern)) {
+        while (index >= 0 && !Objects.equals(array[index], pattern)) {
             index--;
         }
         return index;

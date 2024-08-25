@@ -126,7 +126,6 @@ public class LinkedList<T> implements List<T> {
         addNode(node, index);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T remove(int index) {
         Node<T> removedNode;
@@ -139,7 +138,14 @@ public class LinkedList<T> implements List<T> {
             removedNode = removeMiddle(index);
         }
         size--;
+        clearReferencies(removedNode);
         return (T) removedNode.obj;
+    }
+
+    private void clearReferencies(Node<T> node) {
+        node.next = null;
+        node.obj = null;
+        node.prev = null;
     }
 
     private Node<T> removeMiddle(int index) {
