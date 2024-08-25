@@ -34,15 +34,7 @@ public class ArrayList<T> implements List<T> {
         return removed;
     }
 
-    @Override
-    public boolean remove(T pattern) {
-        int index = indexOf(pattern);
-        boolean wasRemoved = index >= 0;
-        if (wasRemoved) {
-            remove(index);
-        }
-        return wasRemoved;
-    }
+
 
     @Override
     public int indexOf(T pattern) {
@@ -63,10 +55,7 @@ public class ArrayList<T> implements List<T> {
         return size == 0;
     }
 
-    @Override
-    public boolean contains(T pattern) {
-        return indexOf(pattern) >= 0;
-    }
+
 
     @Override
     public Iterator<T> iterator() {

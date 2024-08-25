@@ -18,36 +18,28 @@ public class LinkedList<T> implements List<T> {
 
     private class LinkedListIterator implements Iterator<T> {
         Node<T> current = head;
-    
+
         @Override
         public boolean hasNext() {
             return current != null;
         }
-    
+
         @Override
         public T next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-    
+
             T obj = current.obj;
             current = current.next;
-    
+
             return obj;
         }
     }
-    
 
     Node<T> head;
     Node<T> tail;
     int size = 0;
-
-    private void checkIndex(int index, boolean sizeInclusive) {
-        int limit = sizeInclusive ? size : size - 1;
-        if (index < 0 || index > limit) {
-            throw new IndexOutOfBoundsException(index);
-        }
-    }
 
     private Node<T> getNode(int index) {
         return index < size / 2 ? getNodeFromHead(index) : getNodeFromTail(index);
@@ -113,16 +105,6 @@ public class LinkedList<T> implements List<T> {
     }
 
     @Override
-    public boolean remove(T pattern) {
-        int index = indexOf(pattern);
-        boolean wasRemoved = index >= 0;
-        if (wasRemoved) {
-            remove(index);
-        }
-        return wasRemoved;
-    }
-
-    @Override
     public int size() {
         return size;
     }
@@ -130,11 +112,6 @@ public class LinkedList<T> implements List<T> {
     @Override
     public boolean isEmpty() {
         return size == 0;
-    }
-
-    @Override
-    public boolean contains(T pattern) {
-        return indexOf(pattern) > -1;
     }
 
     @Override
@@ -170,17 +147,8 @@ public class LinkedList<T> implements List<T> {
         Node<T> nodeBefore = removedNode.prev;
         Node<T> nodeAfter = removedNode.next;
 
-        if (!Objects.equals(nodeBefore, null)) {
-            nodeBefore.next = nodeAfter;
-        } else {
-            head = nodeAfter;
-        }
-
-        if (!Objects.equals(nodeAfter, null)) {
-            nodeAfter.prev = nodeBefore;
-        } else {
-            tail = nodeBefore;
-        }
+        nodeBefore.next = nodeAfter;
+        nodeAfter.prev = nodeBefore;
 
         return removedNode;
     }
