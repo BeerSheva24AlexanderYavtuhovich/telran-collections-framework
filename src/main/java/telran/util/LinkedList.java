@@ -35,6 +35,11 @@ public class LinkedList<T> implements List<T> {
 
             return obj;
         }
+
+        @Override
+        public void remove() {
+            // TODO
+        }
     }
 
     Node<T> head;
