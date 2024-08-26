@@ -78,7 +78,7 @@ public class ArrayList<T> implements List<T> {
                 if (!flNext) {
                     throw new IllegalStateException();
                 }
-                ArrayList.this.remove(--index); // compl n - too much
+                ArrayList.this.remove(--index);
                 flNext = false;
             }
 
@@ -87,10 +87,28 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public boolean removeIf(Predicate<T> predicate) {
-        // TODO
-        //algoritm complexity O[N]
-        //two indeces and one going over throw one array
-        return List.super.removeIf(predicate);
+        boolean removed = false;
+        int newIndex = 0;
+
+        for (int currentIndex = 0; currentIndex < size; currentIndex++) {
+            T element = get(currentIndex);
+            if (!predicate.test(element)) {
+
+                if (newIndex != currentIndex) {
+                    add(newIndex, element);
+                    remove(currentIndex + 1);
+                }
+                newIndex++;
+            } else {
+                removed = true;
+            }
+        }
+
+        while (size > newIndex) {
+            remove(size - 1);
+        }
+
+        return removed;
     }
 
     @Override

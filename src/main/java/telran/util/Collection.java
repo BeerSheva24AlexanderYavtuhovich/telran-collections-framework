@@ -19,8 +19,8 @@ public interface Collection<T> extends Iterable<T> {
         return size() < oldSize;
     }
 
-    default boolean clear() {
-        return removeIf(n -> true);
+    default void clear() {
+        removeIf(n -> true);
     }
 
     boolean add(T obj);

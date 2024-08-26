@@ -50,18 +50,27 @@ public abstract class ListTest extends CollectionTest {
     }
 
     @Test
-    @Override
-    void removeTest() {
+    void removeHeadTest() {
         list.remove(0);
         assertFalse(list.contains(3));
-        list.remove(3);
-        assertFalse(list.contains(10));
-        list.remove(5);
-        assertFalse(list.contains(17));
-        assertEquals(array.length - 3, list.size());
+        assertEquals(array.length - 1, list.size());
     }
 
-     @Test
+    @Test
+    void removeMiddleTest() {
+        list.remove(4);
+        assertFalse(list.contains(10));
+        assertEquals(array.length - 1, list.size());
+    }
+
+    @Test
+    void removeTailTest() {
+        list.remove(7);
+        assertFalse(list.contains(17));
+        assertEquals(array.length - 1, list.size());
+    }
+
+    @Test
     void testRemoveAtIndex() {
         assertEquals(20, list.remove(2));
         assertEquals(7, list.size());

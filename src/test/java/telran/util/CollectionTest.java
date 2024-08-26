@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 public abstract class CollectionTest {
     private static final int N_ELEMENTS = 1_000_000;
@@ -130,12 +132,17 @@ public abstract class CollectionTest {
         assertTrue(collection.isEmpty());
     }
 
-    // TODO see all required parameters (timeout, and additional) in
     @Test
+    @Timeout(value = 30, unit = TimeUnit.MILLISECONDS)
     void performanceTest() {
+        long start = System.nanoTime();
+
         collection.clear();
         IntStream.range(0, N_ELEMENTS).forEach(i -> collection.add(random.nextInt()));
         collection.clear();
+
+        long end = System.nanoTime();
+        System.out.println("Execution time: " + (end - start) / 1_000_000 + " ms");
     }
 
 }
