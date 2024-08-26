@@ -91,23 +91,19 @@ public class ArrayList<T> implements List<T> {
         int newIndex = 0;
 
         for (int currentIndex = 0; currentIndex < size; currentIndex++) {
-            T element = get(currentIndex);
+            T element = (T) array[currentIndex];
             if (!predicate.test(element)) {
-
-                if (newIndex != currentIndex) {
-                    add(newIndex, element);
-                    remove(currentIndex + 1);
-                }
-                newIndex++;
+                array[newIndex++] = element;
             } else {
                 removed = true;
             }
         }
 
-        while (size > newIndex) {
-            remove(size - 1);
+        for (int i = newIndex; i < size; i++) {
+            array[i] = null;
         }
 
+        size = newIndex;
         return removed;
     }
 
