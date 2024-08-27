@@ -91,6 +91,7 @@ public class ArrayList<T> implements List<T> {
         int newIndex = 0;
 
         for (int currentIndex = 0; currentIndex < size; currentIndex++) {
+            @SuppressWarnings("unchecked")
             T element = (T) array[currentIndex];
             if (!predicate.test(element)) {
                 array[newIndex++] = element;

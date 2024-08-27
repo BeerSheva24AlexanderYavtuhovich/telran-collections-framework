@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,10 +28,15 @@ public abstract class CollectionTest {
     }
 
     @Test
-    void addTest() {
+    void addNonExistingTest() {
         assertTrue(collection.add(200));
+        assertEquals(array.length + 1, collection.size());
+    }
+
+    @Test
+    void addExistingTest() {
         assertTrue(collection.add(17));
-        assertEquals(array.length + 2, collection.size());
+        assertEquals(array.length + 1, collection.size());
     }
 
     @Test
@@ -136,12 +142,22 @@ public abstract class CollectionTest {
     @Timeout(value = 300, unit = TimeUnit.MILLISECONDS)
     void performanceTest() {
         long start = System.nanoTime();
+
         IntStream.range(0, N_ELEMENTS).forEach(i -> collection.add(random.nextInt()));
         collection.clear();
         IntStream.range(0, N_ELEMENTS).forEach(i -> collection.add(random.nextInt()));
         collection.removeIf(n -> n % 2 == 0);
+        assertTrue(collection.stream().allMatch(n -> n % 2 != 0));
+        collection.clear();
+        assertTrue(collection.isEmpty());
+
         long end = System.nanoTime();
         System.out.println("Execution time: " + (end - start) / 1_000_000 + " ms");
+    }
+
+    protected void runTest(Integer[] expected) {
+        assertArrayEquals(expected, collection.stream().toArray(Integer[]::new));
+        assertEquals(expected.length, collection.size());
     }
 
 }

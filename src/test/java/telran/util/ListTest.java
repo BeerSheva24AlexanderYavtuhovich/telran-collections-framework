@@ -20,7 +20,6 @@ public abstract class ListTest extends CollectionTest {
     // { 3, -10, 20, 1, 10, 8, 100, 17 };
 
     @Test
-    @Override
     void addTest() {
         Integer newEl = 300;
         list.add(newEl);
