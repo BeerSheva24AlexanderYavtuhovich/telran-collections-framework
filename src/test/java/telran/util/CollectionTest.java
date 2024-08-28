@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 public abstract class CollectionTest {
-    private static final int N_ELEMENTS = 100;
+    private static final int N_ELEMENTS = 1_000_000;
     protected Collection<Integer> collection;
     Random random = new Random();
     Integer[] array = { 3, -10, 20, 1, 10, 8, 100, 17 };
@@ -129,7 +129,7 @@ public abstract class CollectionTest {
     }
 
     @Test
-    @Timeout(value = 300, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
     void performanceTest() {
         long start = System.nanoTime();
 

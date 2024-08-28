@@ -15,26 +15,31 @@ public class HashSet<T> implements Set<T> {
         Iterator<T> currentIterator;
         Iterator<T> prevIterator;
         int indexIterator;
+        boolean hasNextElement;
 
         public HashSetIterator() {
             this.indexIterator = 0;
             this.currentIterator = getCurrentIterator();
+            this.hasNextElement = (currentIterator != null && currentIterator.hasNext());
         }
 
         @Override
         public boolean hasNext() {
-            return (currentIterator != null && currentIterator.hasNext()) ||
-                    (currentIterator = getCurrentIterator()) != null && currentIterator.hasNext();
+            return hasNextElement;
         }
 
         @Override
         public T next() {
-            if (!hasNext()) {
+            if (!hasNextElement) {
                 throw new NoSuchElementException();
             }
-
             prevIterator = currentIterator;
-            return currentIterator.next();
+            T nextElement = currentIterator.next();
+            if (!currentIterator.hasNext()) {
+                currentIterator = getCurrentIterator();
+            }
+            hasNextElement = (currentIterator != null && currentIterator.hasNext());
+            return nextElement;
         }
 
         @Override
@@ -50,7 +55,6 @@ public class HashSet<T> implements Set<T> {
 
         private Iterator<T> getCurrentIterator() {
             Iterator<T> iterator = null;
-
             while (indexIterator < hashTable.length && iterator == null) {
                 List<T> bucket = hashTable[indexIterator++];
                 if (bucket != null && !bucket.isEmpty()) {
@@ -117,10 +121,9 @@ public class HashSet<T> implements Set<T> {
         if (contains(pattern)) {
             int index = getIndex(pattern, hashTable.length);
             List<T> list = hashTable[index];
-            if (list != null && list.remove(pattern)) {
-                size--;
-                removed = true;
-            }
+            list.remove(pattern);
+            size--;
+            removed = true;
         }
         return removed;
     }
@@ -149,26 +152,22 @@ public class HashSet<T> implements Set<T> {
 
     @Override
     public T get(Object pattern) {
-        T result = null;
+        T res = null;
         int index = getIndex((T) pattern, hashTable.length);
         List<T> list = hashTable[index];
 
         if (list != null) {
-            result = getWithIterator(pattern, result, list);
-        }
-
-        return result;
-    }
-
-    private T getWithIterator(Object pattern, T result, List<T> list) {
-        Iterator<T> iterator = list.iterator();
-        while (result == null && iterator.hasNext()) {
-            T element = iterator.next();
-            if (element.equals(pattern)) {
-                result = element;
+            int i = 0;
+            while (i < list.size() && res == null) {
+                T element = list.get(i);
+                if (element.equals(pattern)) {
+                    res = element;
+                }
+                i++;
             }
         }
-        return result;
+
+        return res;
     }
 
 }
