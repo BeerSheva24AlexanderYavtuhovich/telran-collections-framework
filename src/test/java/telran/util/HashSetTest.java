@@ -7,13 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 
 public class HashSetTest extends SetTest {
-    @BeforeEach
     @Override
+    @BeforeEach
     void setUp() {
         collection = new HashSet<>();
         super.setUp();
     }
-@Override
+
+    @Override
     protected void runTest(Integer[] expected) {
         Integer[] expectedSorted = Arrays.copyOf(expected, expected.length);
         Arrays.sort(expectedSorted);

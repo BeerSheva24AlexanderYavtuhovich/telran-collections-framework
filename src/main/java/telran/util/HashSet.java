@@ -1,6 +1,7 @@
 package telran.util;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 @SuppressWarnings("unchecked")
 public class HashSet<T> implements Set<T> {
@@ -12,27 +13,53 @@ public class HashSet<T> implements Set<T> {
 
     private class HashSetIterator implements Iterator<T> {
         Iterator<T> currentIterator;
-        Iterator<T> previousIterator;
+        Iterator<T> prevIterator;
         int indexIterator;
+
+        public HashSetIterator() {
+            this.indexIterator = 0;
+            this.currentIterator = getCurrentIterator();
+        }
 
         @Override
         public boolean hasNext() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'hasNext'");
+            return (currentIterator != null && currentIterator.hasNext()) ||
+                    (currentIterator = getCurrentIterator()) != null && currentIterator.hasNext();
         }
 
         @Override
         public T next() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'next'");
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            prevIterator = currentIterator;
+            return currentIterator.next();
         }
 
         @Override
         public void remove() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'next'");
+            if (prevIterator == null) {
+                throw new IllegalStateException();
+            }
+
+            prevIterator.remove();
+            prevIterator = null;
+            size--;
         }
 
+        private Iterator<T> getCurrentIterator() {
+            Iterator<T> iterator = null;
+
+            while (indexIterator < hashTable.length && iterator == null) {
+                List<T> bucket = hashTable[indexIterator++];
+                if (bucket != null && !bucket.isEmpty()) {
+                    iterator = bucket.iterator();
+                }
+            }
+
+            return iterator;
+        }
     }
 
     public HashSet(int hashTableLength, float factor) {
@@ -63,9 +90,9 @@ public class HashSet<T> implements Set<T> {
         List<T> list = table[index];
         if (list == null) {
             list = new ArrayList<>(3);
+            table[index] = list;
         }
         list.add(obj);
-
     }
 
     private int getIndex(T obj, int length) {
@@ -78,7 +105,7 @@ public class HashSet<T> implements Set<T> {
         for (List<T> list : hashTable) {
             if (list != null) {
                 list.forEach(obj -> addObjInHashTable(obj, tempTable));
-                list.clear(); // ??? for testing, if it doesnt work - remove
+                list.clear();
             }
         }
         hashTable = tempTable;
@@ -86,8 +113,16 @@ public class HashSet<T> implements Set<T> {
 
     @Override
     public boolean remove(T pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        boolean removed = false;
+        if (contains(pattern)) {
+            int index = getIndex(pattern, hashTable.length);
+            List<T> list = hashTable[index];
+            if (list != null && list.remove(pattern)) {
+                size--;
+                removed = true;
+            }
+        }
+        return removed;
     }
 
     @Override
@@ -114,8 +149,26 @@ public class HashSet<T> implements Set<T> {
 
     @Override
     public T get(Object pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+        T result = null;
+        int index = getIndex((T) pattern, hashTable.length);
+        List<T> list = hashTable[index];
+
+        if (list != null) {
+            result = getWithIterator(pattern, result, list);
+        }
+
+        return result;
+    }
+
+    private T getWithIterator(Object pattern, T result, List<T> list) {
+        Iterator<T> iterator = list.iterator();
+        while (result == null && iterator.hasNext()) {
+            T element = iterator.next();
+            if (element.equals(pattern)) {
+                result = element;
+            }
+        }
+        return result;
     }
 
 }

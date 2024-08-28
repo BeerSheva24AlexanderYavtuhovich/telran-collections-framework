@@ -129,4 +129,5 @@ public abstract class ListTest extends CollectionTest {
         }
         assertFalse(iterator.hasNext());
     }
+
 }

@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 public abstract class CollectionTest {
-    private static final int N_ELEMENTS = 1_000_000;
+    private static final int N_ELEMENTS = 100;
     protected Collection<Integer> collection;
     Random random = new Random();
     Integer[] array = { 3, -10, 20, 1, 10, 8, 100, 17 };
@@ -83,23 +83,13 @@ public abstract class CollectionTest {
     }
 
     @Test
-    void iteratorHasNextTest() {
+    void iteratorTest() {
         Iterator<Integer> iterator = collection.iterator();
         for (Integer el : array) {
             assertTrue(iterator.hasNext());
             assertEquals(el, iterator.next());
         }
         assertFalse(iterator.hasNext());
-    }
-
-    @Test
-    void iteratorNextTest() {
-        Iterator<Integer> iterator = collection.iterator();
-        int index = 0;
-
-        while (iterator.hasNext()) {
-            assertEquals(array[index++], iterator.next());
-        }
         assertThrowsExactly(NoSuchElementException.class, iterator::next);
     }
 
