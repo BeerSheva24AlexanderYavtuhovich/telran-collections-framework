@@ -25,7 +25,7 @@ public abstract class SetTest extends CollectionTest {
         assertFalse(set.add(17));
 
     }
-
+ 
     @Test
     void getPatternTest() {
         assertEquals(-10, set.get(-10));
@@ -50,5 +50,6 @@ public abstract class SetTest extends CollectionTest {
         assertArrayEquals(expected, actual);
         assertFalse(iterator.hasNext());
     }
+        
 
 }

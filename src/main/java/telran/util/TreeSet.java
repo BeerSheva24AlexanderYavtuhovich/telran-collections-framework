@@ -2,9 +2,11 @@ package telran.util;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 @SuppressWarnings("unchecked")
 public class TreeSet<T> implements Set<T> {
+
     private static class Node<T> {
         T obj;
         Node<T> parent;
@@ -17,42 +19,57 @@ public class TreeSet<T> implements Set<T> {
     }
 
     private class TreeSetIterator implements Iterator<T> {
-        // TODO
+        Node<T> current;
+        Node<T> last;
 
-        // getNextCurrentAlgorithm
-        // getLeastFrom(root) - going to left until left null, and get first current
-        // getNextCurrent(current) - if current has right not null then
-        // getListFrom(right),
-        // if current doesnt have right then getGreaterParent(current) and if it returns
-        // null - current null
-
-        // removeNode algorithm
-        // Two options only:
-        // removeNonJunction(node) - either node is a leaf (both left and right are
-        // nulls) or either left or right null - connect parent with child like
-        // linkedlist only if root noJunction, need to set nulls
-        // removeJunction - getGreatestFrom(left) set instead of removing and remove it
-        // with removeNonJunction
+        public TreeSetIterator() {
+            this.current = getLeastFrom(root);
+            this.last = null;
+        }
 
         @Override
         public boolean hasNext() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'hasNext'");
+            return current != null;
         }
 
         @Override
         public T next() {
-
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'next'");
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            last = current;
+            current = getNextCurrent(current);
+            return last.obj;
         }
 
         @Override
         public void remove() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'next'");
+            if (last == null) {
+                throw new IllegalStateException();
+            }
+            removeParentOrNode(last);
+            last = null;
         }
 
+        private Node<T> getLeastFrom(Node<T> node) {
+            while (node.left != null) {
+                node = node.left;
+            }
+            return node;
+        }
+
+        private Node<T> getNextCurrent(Node<T> node) {
+            return node.right != null ? getLeastFrom(node.right) : getGreaterParent(node);
+        }
+
+        private Node<T> getGreaterParent(Node<T> node) {
+            Node<T> parent = node.parent;
+            while (parent != null && node == parent.right) {
+                node = parent;
+                parent = parent.parent;
+            }
+            return parent;
+        }
     }
 
     private Node<T> root;
@@ -94,32 +111,85 @@ public class TreeSet<T> implements Set<T> {
     }
 
     private void addRoot(Node<T> node) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addRoot'");
+        root = node;
     }
 
     @Override
     public boolean remove(T pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        boolean res = false;
+        Node<T> node = getNode(pattern);
+        if (node != null) {
+            removeParentOrNode(node);
+            res = true;
+        }
+        return res;
+    }
+
+    private void removeParentOrNode(Node<T> node) {
+        if (node.left == null || node.right == null) {
+            removeNonJunction(node);
+        } else {
+            removeJunction(node);
+        }
+        size--;
+    }
+
+    private void removeJunction(Node<T> node) {
+        Node<T> greatest = getGreatestFrom(node.left);
+        node.obj = greatest.obj;
+        removeNonJunction(greatest);
+    }
+
+    private void removeNonJunction(Node<T> node) {
+        Node<T> child = (node.left != null) ? node.left : node.right;
+
+        if (node.parent == null) {
+            root = child;
+            if (child != null) {
+                child.parent = null;
+            }
+        } else {
+            if (node == node.parent.left) {
+                node.parent.left = child;
+            } else {
+                node.parent.right = child;
+            }
+            if (child != null) {
+                child.parent = node.parent;
+            }
+        }
+    }
+
+    private Node<T> getGreatestFrom(Node<T> node) {
+        while (node.right != null) {
+            node = node.right;
+        }
+        return node;
     }
 
     @Override
     public int size() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'size'");
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
+        return size == 0;
     }
 
     @Override
     public boolean contains(T pattern) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contains'");
+        Node<T> current = root;
+        boolean res = false;
+        while (current != null && !res) {
+            int compRes = comparator.compare(pattern, current.obj);
+            if (compRes == 0) {
+                res = true;
+            } else {
+                current = compRes > 0 ? current.right : current.left;
+            }
+        }
+        return res;
     }
 
     @Override
@@ -147,15 +217,16 @@ public class TreeSet<T> implements Set<T> {
 
     private Node<T> getNode(T pattern) {
         Node<T> res = getParentOrNode(pattern);
-        int compRes = comparator.compare(pattern, res.obj);
-        return compRes == 0 ? res : null;
-
+        if (res != null) {
+            int compRes = comparator.compare(pattern, res.obj);
+            res = compRes == 0 ? res : null;
+        }
+        return res;
     }
 
     private Node<T> getParent(T pattern) {
         Node<T> res = getParentOrNode(pattern);
         int compRes = comparator.compare(pattern, res.obj);
         return compRes == 0 ? null : res;
-
     }
 }

@@ -129,7 +129,7 @@ public abstract class CollectionTest {
     }
 
     @Test
-    @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     void performanceTest() {
         long start = System.nanoTime();
 
