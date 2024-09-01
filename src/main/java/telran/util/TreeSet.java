@@ -47,7 +47,7 @@ public class TreeSet<T> implements Set<T> {
             if (last == null) {
                 throw new IllegalStateException();
             }
-            removeParentOrNode(last);
+            removeNode(last);
             last = null;
         }
 
@@ -119,13 +119,13 @@ public class TreeSet<T> implements Set<T> {
         boolean res = false;
         Node<T> node = getNode(pattern);
         if (node != null) {
-            removeParentOrNode(node);
+            removeNode(node);
             res = true;
         }
         return res;
     }
 
-    private void removeParentOrNode(Node<T> node) {
+    private void removeNode(Node<T> node) {
         if (node.left == null || node.right == null) {
             removeNonJunction(node);
         } else {
@@ -145,18 +145,15 @@ public class TreeSet<T> implements Set<T> {
 
         if (node.parent == null) {
             root = child;
-            if (child != null) {
-                child.parent = null;
-            }
         } else {
             if (node == node.parent.left) {
                 node.parent.left = child;
             } else {
                 node.parent.right = child;
             }
-            if (child != null) {
-                child.parent = node.parent;
-            }
+        }
+        if (child != null) {
+            child.parent = node.parent;
         }
     }
 
