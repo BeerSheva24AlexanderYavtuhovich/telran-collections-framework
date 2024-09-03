@@ -155,6 +155,12 @@ public class TreeSet<T> implements Set<T> {
         if (child != null) {
             child.parent = node.parent;
         }
+        setNulls(node);
+    }
+
+    private void setNulls(Node<T> node) {
+        node.obj = null;
+        node.parent = node.left = node.right = null;
     }
 
     private Node<T> getGreatestFrom(Node<T> node) {
