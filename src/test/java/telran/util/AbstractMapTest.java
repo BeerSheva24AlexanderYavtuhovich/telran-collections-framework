@@ -55,7 +55,6 @@ public abstract class AbstractMapTest {
             index++;
         }
 
-        Arrays.sort(actualKeys); 
         Arrays.sort(actualValues); 
 
         runTest(expectedKeys, actualKeys);
@@ -77,16 +76,27 @@ public abstract class AbstractMapTest {
         Arrays.sort(actual);       
         runTest(testKeys, actual);
     }
-
+    @SuppressWarnings("unchecked")
     @Test
     void entrySetTest() {
         Set<Map.Entry<Integer, Integer>> entries = map.entrySet();
         assertEquals(4, entries.size());
-        assertTrue(entries.contains(new Entry<>(10, 100)));
-        assertTrue(entries.contains(new Entry<>(-2, 4)));
-        assertTrue(entries.contains(new Entry<>(12, 144)));
-        assertTrue(entries.contains(new Entry<>(-3, 9)));
-        assertFalse(entries.contains(new Entry<>(-99, 99)));
+    
+
+        Entry<Integer, Integer>[] expectedEntries = new Entry[]{
+            new Entry<>(10, 100),
+            new Entry<>(-2, 4),
+            new Entry<>(12, 144),
+            new Entry<>(-3, 9)
+        };
+    
+        Entry<Integer, Integer>[] actualEntries = new Entry[entries.size()];
+        int index = 0;
+        for (Map.Entry<Integer, Integer> entry : entries) {
+            actualEntries[index++] = new Entry<>(entry.getKey(), entry.getValue());
+        }
+    
+        runTest(expectedEntries, actualEntries);
     }
 
     @Test

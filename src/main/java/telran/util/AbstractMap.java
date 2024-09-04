@@ -1,6 +1,7 @@
 package telran.util;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractMap<K, V> implements Map<K, V> {
@@ -46,13 +47,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
         boolean found = false;
         while (iterator.hasNext() && !found) {
             Entry<K, V> entry = iterator.next();
-            V entryValue = entry.getValue();
-            if (value == null) {
-                found = entryValue == null; 
-            } else {
-                found = value.equals(entryValue); 
-            }
-        
+            found = Objects.equals(entry.getValue(), value);
         }
         return found;
     }
@@ -60,8 +55,8 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
     @Override
     public Set<K> keySet() {
         Set<K> keySet = getEmptyKeySet();
-        for (Entry<K, V> entry : set) { 
-            keySet.add(entry.getKey()); 
+        for (Entry<K, V> entry : set) {
+            keySet.add(entry.getKey());
         }
         return keySet;
     }
@@ -73,11 +68,11 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
     @Override
     public Collection<V> values() {
-            Collection<V> collection = new LinkedList<>(); 
-            for (Entry<K, V> entry : set) { 
-                collection.add(entry.getValue()); 
-            }
-            return collection;
+        Collection<V> collection = new LinkedList<>();
+        for (Entry<K, V> entry : set) {
+            collection.add(entry.getValue());
+        }
+        return collection;
     }
 
     @Override
