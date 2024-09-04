@@ -46,7 +46,13 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
         boolean found = false;
         while (iterator.hasNext() && !found) {
             Entry<K, V> entry = iterator.next();
-            found = entry.getValue().equals(value);
+            V entryValue = entry.getValue();
+            if (value == null) {
+                found = entryValue == null; 
+            } else {
+                found = value.equals(entryValue); 
+            }
+        
         }
         return found;
     }

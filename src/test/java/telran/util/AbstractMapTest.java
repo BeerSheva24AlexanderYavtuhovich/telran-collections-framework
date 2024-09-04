@@ -55,10 +55,8 @@ public abstract class AbstractMapTest {
             index++;
         }
 
-        Arrays.sort(actualKeys); // without sorting actual TreeMap not working, i still trying to understand
-                                 // what's wrong
-        Arrays.sort(actualValues); // without sorting actual TreeMap not working, i still trying to understand
-                                   // what's wrong
+        Arrays.sort(actualKeys); 
+        Arrays.sort(actualValues); 
 
         runTest(expectedKeys, actualKeys);
         runTest(expectedValues, actualValues);
@@ -76,8 +74,7 @@ public abstract class AbstractMapTest {
     void keySetTest() {
         Set<Integer> actualKeySet = map.keySet();
         Integer[] actual = actualKeySet.stream().toArray(Integer[]::new);
-        Arrays.sort(actual); // without sorting actual TreeMap not working, i still trying to understand
-                             // what's wrong
+        Arrays.sort(actual);       
         runTest(testKeys, actual);
     }
 
