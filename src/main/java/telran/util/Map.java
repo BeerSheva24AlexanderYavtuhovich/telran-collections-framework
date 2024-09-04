@@ -35,7 +35,8 @@ public interface Map<K, V> {
 
         @Override
         public boolean equals(Object obj) {
-            return key.equals(obj);
+            Entry<K, V> entry = (Entry<K, V>) obj;
+            return key.equals(entry.key);
         }
 
     }
@@ -53,8 +54,11 @@ public interface Map<K, V> {
     V put(K key, V value);
 
     default V putIfAbsent(K key, V value) {
-        // TODO
-        return null;
+        V valueToCheck = get(key);
+        if (valueToCheck == null) {
+            valueToCheck = put(key, value);
+        }
+        return valueToCheck;
     }
 
     boolean containsKey(Object key);

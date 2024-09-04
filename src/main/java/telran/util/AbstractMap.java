@@ -1,5 +1,8 @@
 package telran.util;
 
+import java.util.Iterator;
+
+@SuppressWarnings("unchecked")
 public abstract class AbstractMap<K, V> implements Map<K, V> {
     protected Set<Entry<K, V>> set;
 
@@ -7,7 +10,8 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
     @Override
     public V get(Object key) {
-        Entry<K, V> entry = set.get(key);
+        Entry<K, V> pattern = new Entry<>((K) key, null);
+        Entry<K, V> entry = set.get(pattern);
         V res = null;
         if (entry != null) {
             res = entry.getValue();
@@ -17,30 +21,43 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'put'");
+        Entry<K, V> entryToAdd = new Entry<>(key, value);
+        Entry<K, V> existingEntry = set.get(entryToAdd);
+        V res = null;
+
+        if (existingEntry != null) {
+            res = existingEntry.getValue();
+            existingEntry.setValue(value);
+        } else {
+            set.add(entryToAdd);
+        }
+        return res;
     }
 
     @Override
     public boolean containsKey(Object key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'containsKey'");
+        Entry<K, V> pattern = new Entry<>((K) key, null);
+        return set.contains(pattern);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'containsValue'");
+        Iterator<Entry<K, V>> iterator = set.iterator();
+        boolean found = false;
+        while (iterator.hasNext() && !found) {
+            Entry<K, V> entry = iterator.next();
+            found = entry.getValue().equals(value);
+        }
+        return found;
     }
 
     @Override
     public Set<K> keySet() {
         Set<K> keySet = getEmptyKeySet();
-        // TODO
-        // foreach
-        // keyset add
-        // should be exactly type of set
-        return null;
+        for (Entry<K, V> entry : set) { 
+            keySet.add(entry.getKey()); 
+        }
+        return keySet;
     }
 
     @Override
@@ -50,10 +67,11 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
     @Override
     public Collection<V> values() {
-        // TODO
-        // any collection that allows duplicate
-        // LinkedList fr example
-        throw new UnsupportedOperationException("Unimplemented method");
+            Collection<V> collection = new LinkedList<>(); 
+            for (Entry<K, V> entry : set) { 
+                collection.add(entry.getValue()); 
+            }
+            return collection;
     }
 
     @Override
