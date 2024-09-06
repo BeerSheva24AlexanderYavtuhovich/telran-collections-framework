@@ -1,5 +1,6 @@
 package telran.util;
 
+import java.lang.classfile.components.ClassPrinter;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -51,13 +52,6 @@ public class TreeSet<T> implements SortedSet<T> {
             last = null;
         }
 
-        private Node<T> getLeastFrom(Node<T> node) {
-            while (node.left != null) {
-                node = node.left;
-            }
-            return node;
-        }
-
         private Node<T> getNextCurrent(Node<T> node) {
             return node.right != null ? getLeastFrom(node.right) : getGreaterParent(node);
         }
@@ -70,6 +64,13 @@ public class TreeSet<T> implements SortedSet<T> {
             }
             return parent;
         }
+    }
+
+    private Node<T> getLeastFrom(Node<T> node) {
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node;
     }
 
     private Node<T> root;
@@ -235,31 +236,52 @@ public class TreeSet<T> implements SortedSet<T> {
 
     @Override
     public T first() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'first'");
+        return root != null ? getLeastFrom(root).obj : null;
     }
 
     @Override
     public T last() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'last'");
+        return root != null ? getGreatestFrom(root).obj : null;
     }
 
     @Override
     public T floor(T key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'floor'");
+        return getFloorOrCeiling(key, root, true);
+    }
+
+    private T getFloorOrCeiling(T key, Node<T> current, boolean findFloor) {
+        T result = null;
+        boolean founded = false;
+        while (current != null && !founded) {
+            int cmp = comparator.compare(current.obj, key);
+            if (cmp == 0) {
+                result = current.obj;
+                founded = true;
+            } else if (cmp > 0) {
+                if (!findFloor) {
+                    result = current.obj;
+                }
+                current = current.left;
+            } else {
+                if (findFloor) {
+                    result = current.obj;
+                }
+                current = current.right;
+            }
+        }
+        return result;
     }
 
     @Override
     public T ceiling(T key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ceiling'");
+        return getFloorOrCeiling(key, root, false);
     }
 
     @Override
     public SortedSet<T> subSet(T keyFrom, T keyTo) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'subSet'");
+        SortedSet<T> subSet = new TreeSet<>(comparator);
+        this.forEach(subSet::add);
+        subSet.removeIf(element -> comparator.compare(element, keyFrom) < 0 || comparator.compare(element, keyTo) >= 0);
+        return subSet;
     }
 }

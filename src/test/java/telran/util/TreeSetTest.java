@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 
-public class TreeSetTest extends SetTest {
+public class TreeSetTest extends SortedSetTest {
     @Override
     @BeforeEach
     void setUp() {

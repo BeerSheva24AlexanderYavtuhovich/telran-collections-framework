@@ -7,3 +7,7 @@
 # HW23 - Set, HashSet
 
 # HW24 - TreeSet
+
+# HW25 - Map, HashMap, TreeMap
+
+# HW26 - SortedSet, LinkedHashSet, TreeSet
