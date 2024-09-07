@@ -1,7 +1,6 @@
 package telran.util;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import telran.util.LinkedList.Node;
 
@@ -23,14 +22,17 @@ public class LinkedHashSet<T> implements Set<T> {
 
     @Override
     public T get(Object pattern) {
-        return map.get(pattern) == null ? null : map.get(pattern).obj;
+        Node<T> node = map.get(pattern);
+        return (node != null) ? node.obj : null;
     }
 
     @Override
     public boolean remove(T pattern) {
         boolean removed = false;
-        if (map.containsKey(pattern)) {
-            list.remove(pattern);
+        Node<T> node = map.get(pattern);
+
+        if (node != null) {
+            list.removeNode(node);
             map.remove(pattern);
             removed = true;
         }
@@ -60,7 +62,6 @@ public class LinkedHashSet<T> implements Set<T> {
     private class LinkedHashSetIterator implements Iterator<T> {
         private final Iterator<T> iterator = list.iterator();
         private T current = null;
-        private boolean wasNext = false;
 
         @Override
         public boolean hasNext() {
@@ -69,22 +70,14 @@ public class LinkedHashSet<T> implements Set<T> {
 
         @Override
         public T next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
             current = iterator.next();
-            wasNext = true;
             return current;
         }
 
         @Override
         public void remove() {
-            if (!wasNext) {
-                throw new IllegalStateException();
-            }
             iterator.remove();
             map.remove(current);
-            wasNext = false;
         }
     }
 

@@ -149,7 +149,7 @@ public class LinkedList<T> implements List<T> {
         return res;
     }
 
-    private void removeNode(Node<T> node) {
+    void removeNode(Node<T> node) {
         if (node == head) {
             removeHead();
         } else if (node == tail) {
