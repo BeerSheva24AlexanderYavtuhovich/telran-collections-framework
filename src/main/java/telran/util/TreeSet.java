@@ -51,20 +51,23 @@ public class TreeSet<T> implements SortedSet<T> {
             last = null;
         }
 
-        private Node<T> getNextCurrent(Node<T> node) {
-            return node.right != null ? getLeastFrom(node.right) : getGreaterParent(node);
-        }
 
-        private Node<T> getGreaterParent(Node<T> node) {
-            Node<T> parent = node.parent;
-            while (parent != null && node == parent.right) {
-                node = parent;
-                parent = parent.parent;
-            }
-            return parent;
-        }
+
+
     }
 
+    private Node<T> getNextCurrent(Node<T> node) {
+        return node.right != null ? getLeastFrom(node.right) : getGreaterParent(node);
+    }
+
+    private Node<T> getGreaterParent(Node<T> node) {
+        Node<T> parent = node.parent;
+        while (parent != null && node == parent.right) {
+            node = parent;
+            parent = parent.parent;
+        }
+        return parent;
+    }
     private Node<T> getLeastFrom(Node<T> node) {
         while (node.left != null) {
             node = node.left;
@@ -278,9 +281,13 @@ public class TreeSet<T> implements SortedSet<T> {
 
     @Override
     public SortedSet<T> subSet(T keyFrom, T keyTo) {
-        SortedSet<T> subSet = new TreeSet<>(comparator);
-        this.forEach(subSet::add);
-        subSet.removeIf(element -> comparator.compare(element, keyFrom) < 0 || comparator.compare(element, keyTo) >= 0);
+        TreeSet<T> subSet = new TreeSet<>(comparator);
+        Node<T> current = getNode(ceiling(keyFrom));
+
+        while (current != null && comparator.compare(current.obj, keyTo) < 0) {
+            subSet.add(current.obj);
+            current = getNextCurrent(current);
+        }
         return subSet;
     }
 }
