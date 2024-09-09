@@ -51,9 +51,6 @@ public class TreeSet<T> implements SortedSet<T> {
             last = null;
         }
 
-
-
-
     }
 
     private Node<T> getNextCurrent(Node<T> node) {
@@ -68,6 +65,7 @@ public class TreeSet<T> implements SortedSet<T> {
         }
         return parent;
     }
+
     private Node<T> getLeastFrom(Node<T> node) {
         while (node.left != null) {
             node = node.left;
@@ -282,12 +280,20 @@ public class TreeSet<T> implements SortedSet<T> {
     @Override
     public SortedSet<T> subSet(T keyFrom, T keyTo) {
         TreeSet<T> subSet = new TreeSet<>(comparator);
-        Node<T> current = getNode(ceiling(keyFrom));
+        Node<T> current = ceilingNode(keyFrom);
 
         while (current != null && comparator.compare(current.obj, keyTo) < 0) {
             subSet.add(current.obj);
             current = getNextCurrent(current);
         }
         return subSet;
+    }
+
+    private Node<T> ceilingNode(T key) {
+        Node<T> node = getParentOrNode(key);
+        if (node != null && comparator.compare(key, node.obj) > 0) {
+            node = getGreaterParent(node);
+        }
+        return node;
     }
 }
