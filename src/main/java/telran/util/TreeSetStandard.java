@@ -5,16 +5,16 @@ import java.util.Iterator;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public class TreeSetStandart<T> implements SortedSet<T> {
+public class TreeSetStandard<T> implements SortedSet<T> {
     java.util.TreeSet<T> tree;
     Comparator<T> comparator;
 
-    public TreeSetStandart(Comparator<T> comparator) {
+    public TreeSetStandard(Comparator<T> comparator) {
         this.comparator = comparator;
         tree = new java.util.TreeSet<>(comparator);
     }
 
-    public TreeSetStandart() {
+    public TreeSetStandard() {
         this((Comparator<T>) Comparator.naturalOrder());
     }
 
@@ -26,6 +26,7 @@ public class TreeSetStandart<T> implements SortedSet<T> {
             res = Objects.equals(pattern, floorObj) ? floorObj : null;
         }
         return res;
+
     }
 
     @Override

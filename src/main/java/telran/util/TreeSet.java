@@ -67,8 +67,10 @@ public class TreeSet<T> implements SortedSet<T> {
     }
 
     private Node<T> getLeastFrom(Node<T> node) {
-        while (node.left != null) {
-            node = node.left;
+        if (node != null) {
+            while (node.left != null) {
+                node = node.left;
+            }
         }
         return node;
     }

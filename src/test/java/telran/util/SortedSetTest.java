@@ -2,6 +2,7 @@ package telran.util;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,7 +52,7 @@ public abstract class SortedSetTest extends SetTest {
         Integer[] actual = sortedSet.subSet(10, 20).stream().toArray(Integer[]::new);
         assertArrayEquals(expected, actual);
     }
-    
+
     @Override
     protected void fillBigCollection() {
         Integer[] array = getBigArrayCW();
@@ -59,14 +60,25 @@ public abstract class SortedSetTest extends SetTest {
     }
 
     protected Integer[] getBigArrayCW() {
-        return new Random().ints().distinct().limit(N_ELEMENTS).boxed().toArray(Integer[]::new );
-    }
-    protected Integer[] getBigArrayHW() {
-       //TODO
-       //return array that have already balanced order
-       return null;
+        return new Random().ints().distinct().limit(N_ELEMENTS).boxed().toArray(Integer[]::new);
     }
 
+    protected Integer[] getBigArrayHW() {
+        Integer[] array = IntStream.rangeClosed(1, N_ELEMENTS).boxed().toArray(Integer[]::new);
+        Integer[] balancedArray = new Integer[array.length];
+        fillBalancedArray(array, balancedArray, 0, array.length - 1, 0);
+        return balancedArray;
+    }
+
+    private int fillBalancedArray(Integer[] sortedArray, Integer[] balancedArray, int left, int right, int index) {
+        if (left <= right) {
+            int middle = (left + right) / 2;
+            balancedArray[index++] = sortedArray[middle];
+            index = fillBalancedArray(sortedArray, balancedArray, left, middle - 1, index);
+            index = fillBalancedArray(sortedArray, balancedArray, middle + 1, right, index);
+        }
+        return index;
+    }
 
     @Override
     protected void runTest(Integer[] expected) {

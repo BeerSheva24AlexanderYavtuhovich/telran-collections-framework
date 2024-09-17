@@ -6,7 +6,7 @@ public class TreeSetStandartTest extends SortedSetTest {
     @BeforeEach
     @Override
     void setUp() {
-        collection = new TreeSetStandart<>();
+        collection = new TreeSetStandard<>();
         super.setUp();
     }
 }

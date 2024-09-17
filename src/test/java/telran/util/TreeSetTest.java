@@ -73,7 +73,7 @@ public class TreeSetTest extends SortedSetTest {
         assertEquals(20, tree.height());
         assertEquals((N_ELEMENTS + 1) / 2, tree.width());
     }
-    
+
     @Test
     void balanceTestHW() {
         TreeSet<Integer> tree = new TreeSet<>();
